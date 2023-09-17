@@ -1,10 +1,15 @@
-my_dict = {"chat": 3, "chien": 1, "oiseau": 2, "poisson": 4}
+import tensorflow as tf
 
-# Tri du dictionnaire par les valeurs et obtention des clés triées
-sorted_keys = sorted(my_dict, key=lambda k: my_dict[k])
+# Créez un ensemble de données d'exemples numériques simples
+dataset = tf.data.Dataset.range(1, 100)  # Un ensemble de données de 1 à 10
 
-# Création d'un nouveau dictionnaire avec les clés triées et des indices
-indexed_dict = {key: index for index, key in enumerate(reversed(sorted_keys))}
+# Définissez la taille du tampon de mélange
+BUFFER_SIZE = 20 
 
-print(indexed_dict)
+# Mélangez l'ensemble de données en utilisant BUFFER_SIZE
+shuffled_dataset = dataset.shuffle(BUFFER_SIZE)
+
+# Parcourez et affichez les éléments mélangés
+for element in shuffled_dataset:
+    print(element.numpy())
 
