@@ -1,6 +1,8 @@
 import pandas as pd
+
 import numpy as np
-import tensorflow as tf
+
+from tensorflow.data import Dataset 
 
 def load(path:str):
     df = pd.read_csv(path)
@@ -16,6 +18,7 @@ class Tokenizer:
         self.special_char = special_char
         self.config = {}
         self.recurent_word = {}
+        self.max_lenght = 0
     @property
     def nb_word(self):
         return len(self.config)
@@ -25,6 +28,7 @@ class Tokenizer:
                 sentence = sentence.replace(char, ' '+char)
             sentence = sentence.replace("  ", ' ')
             list_word = sentence.split(' ')
+            self.max_lenght = max(self.max_lenght, len(list_word))
             for word in list_word:
                 if word in self.recurent_word:
                     self.recurent_word[word] += 1
@@ -37,7 +41,7 @@ class Tokenizer:
             if index >= self.max_word-1:
                 break
             self.config[key] = index+2 
-    def call(self, sentence):
+    def call(self, sentence, padding=True):
         if isinstance(sentence, tuple):
             return (self.call(sentence[0], self.call(sentence[1])))
         if isinstance(sentence, list):
@@ -55,11 +59,12 @@ class Tokenizer:
                 res.append(self.config[word])
             else:
                 res.append(self.config["<oov>"])
+        if padding:
+            res += [0]*(self.max_lenght-len(res))
         return res
 
             
         
-
 def encode_using_hugging():
     """ man page
     https://huggingface.co/docs/transformers/model_doc/gpt2#transformers.GPT2Config """
@@ -76,7 +81,7 @@ def encode_using_tensorflow(data:list, batch_size:int=64):
             {"outputs": outputs[:, 1:]}
             )
     inputs, outputs = data
-    dataset = tf.data.Dataset.from_tensor_slices((list(inputs), list(outputs)))
+    dataset = Dataset.from_tensor_slices((inputs, outputs))
     dataset = dataset.batch(batch_size, drop_remainder=True)
     dataset = dataset.map(transform)
     return dataset.shuffle(2000).prefetch(64).cache()
@@ -90,3 +95,4 @@ if __name__ == "__main__":
     french_token = tokenizer.call(french)
     english_token = tokenizer.call(english)
     dataset = encode_using_tensorflow([french_token, english_token])
+
