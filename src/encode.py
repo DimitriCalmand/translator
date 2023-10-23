@@ -4,8 +4,8 @@ from tensorflow.data import Dataset
 
 def load(path:str):
     df = pd.read_csv(path)
-    french = df["fr"][:10]
-    english = df["en"][:10]
+    french = df["fr"]
+    english = df["en"]
     return french.tolist(), english.tolist()
 class Tokenizer:
     def __init__(self,

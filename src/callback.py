@@ -14,7 +14,7 @@ class DisplayOutputs(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self. verbose == 0:
             print()
-            for i in range(1):
+            for i in range(4):
                 source = self.batch[0]["encoder_inputs"].numpy()[i:i+1]
                 target = self.batch[0]["decoder_inputs"].numpy()[i:i+1]
                 predicted = self.model.generate(source, self.tokenizer)
