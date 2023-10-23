@@ -17,14 +17,13 @@ class embedding_layer(tf.keras.layers.Layer):
                 output_dim=embed_dim
                 )
     def call(self, inputs):
+        #print(f"embedding{self.debug_count} ", tf.math.reduce_mean(inputs))
         lenght = tf.shape(inputs)[-1]
         positions = tf.range(lenght)
         embedded_tokens = self.token_embeddings(inputs)
         embedded_positions = self.position_embeddings(positions)
-        return embedded_tokens + embedded_posisitions
-
-        self.embeding = tf.keras.layers.Embedding(
-class encode_layer(tf.keras.layers.Layer):
+        return embedded_tokens + embedded_positions
+class encoder_layer(tf.keras.layers.Layer):
     def __init__(self,
             num_heads,
             embed_dim,
@@ -32,15 +31,15 @@ class encode_layer(tf.keras.layers.Layer):
             dropout=0.0,
             ):
         """An encoder layer for a translater French -> English"""
-        super(encode_layer, self).__init__()
+        super(encoder_layer, self).__init__()
         self.multi_h_a = tf.keras.layers.MultiHeadAttention(
                 num_heads,
-                key_dim,
+                embed_dim,
                 dropout=0.0)
         self.ffn = tf.keras.Sequential(
                 [
-                    tf.keras.Dense(feed_forward_dim, activation="relu"),
-                    tf.keras.Dense(embed_dim)
+                    tf.keras.layers.Dense(feed_forward_dim, activation="relu"),
+                    tf.keras.layers.Dense(embed_dim)
                 ]
             )
         self.norm1 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
@@ -48,6 +47,7 @@ class encode_layer(tf.keras.layers.Layer):
         self.dropout1 = tf.keras.layers.Dropout(dropout)
         self.dropout2 = tf.keras.layers.Dropout(dropout)
     def call (self, inputs, training=False):
+        #print("encoder mean = ", tf.math.reduce_mean(inputs))
         multi_h_a = self.multi_h_a(inputs, inputs)
         norm1 = self.norm1(multi_h_a+inputs)
         dropout1 = self.dropout1(norm1, training = training)
@@ -62,26 +62,33 @@ class TransformerEncoder(tf.keras.layers.Layer):
             num_heads,
             embed_dim,
             feed_forward_dim,
+            max_sequence_length,
+            vocab_size,
             dropout=0.0
             ):
-        super(TransforerEncoder, self).__init__()
-        layers = [embedding_layer]
+        super(TransformerEncoder, self).__init__()
+        self.embedding_layer = embedding_layer(
+                                            max_sequence_length,
+                                            vocab_size,
+                                            embed_dim
+                                            )
+        layers = []
         for i in range(nb_encoder):
             layers.append(
-                    encode_layer(
+                    encoder_layer(
                         num_heads,
                         embed_dim,
                         feed_forward_dim,
                         dropout=dropout
                         )
                     )
+        self.layers = layers
 
-        self.encoder = tf.keras.Sequential(layers)
     def call(self, inputs, training = False):
-        encoder = self.encoder(inputs)
+        encoder = self.embedding_layer.call(inputs)
+        #tf.print("mean input embeding encoder = ", tf.math.reduce_mean(tf.math.abs(encoder)))
+        for layer in self.layers:
+            encoder = layer(encoder, training=training)
+        #tf.print("mean encoder = ", tf.math.reduce_mean(tf.math.abs(encoder)))
+        #tf.print("encoder = ", encoder)
         return encoder
-
-        
-              
-
-                    
