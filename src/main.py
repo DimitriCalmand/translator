@@ -6,7 +6,7 @@ from time import time
 
 from encode import *
 CHECKPOINT_PATH = "training_1/cp.ckpt"
-def training(get_checkpoint):
+def training(get_checkpoint, returning = False):
     path = "/home/dimitri/documents/python/ia/nlp/"+ \
                 "translator/data/translate.csv"
     french , english = load(path)
@@ -17,7 +17,6 @@ def training(get_checkpoint):
     english_token = tokenizer.call(english, padding = 0)
     dataset = encode_using_tensorflow([french_token, english_token], batch_size = 10)
 
- 
     loss_fn = tf.keras.losses.CategoricalCrossentropy(
             label_smoothing = 0.1
             )
@@ -27,13 +26,12 @@ def training(get_checkpoint):
     cp_callback = tf.keras.callbacks.ModelCheckpoint(
                                                  filepath=CHECKPOINT_PATH,
                                                  save_weights_only=True,
-                                                 verbose=1)
+                                                 verbose=0)
 
-    display_cb = DisplayOutputs(batch, tokenizer, verbose = 10, model = model)
+    display_cb = DisplayOutputs(batch, tokenizer, verbose = 2, model = model)
     model.compile(optimizer = optimizer, loss = loss_fn)
     cur_time = time()
-    model.fit(dataset, epochs = 30, verbose = 1, callbacks = [display_cb, cp_callback])
-    
+    model.fit(dataset, epochs = 10, verbose = 1, callbacks = [display_cb, cp_callback])
     print("time execution = ", time() - cur_time)
     #model.fit(dataset, epochs = 10)
 def create_model(msl, vs, get_checkpoint : bool):
@@ -49,5 +47,14 @@ def create_model(msl, vs, get_checkpoint : bool):
     if (get_checkpoint):
         model.load_weights(CHECKPOINT_PATH)
     return model 
-training(True)
+def test_model():
+    model, tokenizer, callback = training(True, returning = True)
+    model.fit(dataset, epochs = 1, verbose = 1, callbacks = callback)
+    predicted = model.generate("Bonjour comment ca va", tokenizer)
+    str_predicted = tokenizer.decode(predicted.numpy()[0])
+    print(str_predicted)
+#test_model()
+
+
+training(True, True)
 

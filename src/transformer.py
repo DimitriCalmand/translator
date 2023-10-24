@@ -63,7 +63,9 @@ class Transformer(tf.keras.Model):
         return {"loss":self.loss_metric.result()}
 
     def generate(self, inputs, tokenizer):
-        print(self.loss_metric.result())
+        if isinstance(inputs, str):
+            inputs = tokenizer.call([inputs], padding = 0)
+            inputs = tf.convert_to_tensor(inputs)
         bs = tf.shape(inputs)[0]
         enc = self.encoder(inputs)
         decoder_inputs = tf.ones((bs, 1), dtype=tf.int32) * \
