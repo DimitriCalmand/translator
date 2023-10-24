@@ -1,26 +1,34 @@
 import pandas as pd
 import numpy as np
 from tensorflow.data import Dataset 
+from sklearn.model_selection import train_test_split
+import json
 
 def load(path:str):
     df = pd.read_csv(path)
-    french = df["fr"]
-    english = df["en"]
+    french = df["fr"][:100]
+    english = df["en"][:100]
     return french.tolist(), english.tolist()
 class Tokenizer:
     def __init__(self,
             max_word = 10000,
             special_char = ",.?!':;|",
             start_token = '<',
-            end_token = '>'
+            end_token = '>',
+            get_file = False 
             ):
-        self.max_word = max_word 
         self.special_char = special_char
-        self.config = {}
+        self.saver_config = 'saver/saver_config.json'
+        self.saver_properties = 'saver/saver_properties.json'
+        if not get_file :
+            self.config = {}
+            self.max_lenght = 0
+            self.max_word = max_word 
+        else:
+            self.get()
         self.recurent_word = {}
         self.start_token = start_token
         self.end_token = end_token
-        self.max_lenght = 0
 
     @property
     def nb_word(self):
@@ -83,7 +91,25 @@ class Tokenizer:
             res += " "
         return res
 
-        
+    def save(self):
+        with open(self.saver_config, 'w') as f:
+            json.dump(self.config, f)
+
+        with open(self.saver_properties, 'w') as f: 
+            properties = {
+                "max_word" : self.max_word,
+                "max_lenght" : self.max_lenght
+                }
+            json.dump(properties, f)
+
+    def get(self):
+        with open(self.saver_config, 'r') as f:
+            self.config = json.load(f)
+
+        with open(self.saver_properties, 'r') as f:
+            properties = json.load(f)
+            self.max_word = properties["max_word"]
+            self.max_lenght = properties["max_lenght"]
         
 def encode_using_hugging():
     """ man page
@@ -105,17 +131,25 @@ def encode_using_tensorflow(data:list, batch_size:int=64):
     dataset = dataset.batch(batch_size, drop_remainder=True)
     dataset = dataset.map(transform)
     return dataset.shuffle(2000).prefetch(9).cache()
-
-def main():
+def get_data(ratio = 0.2, get_file = False):
     path = "/home/dimitri/documents/python/ia/nlp/"+ \
             "translator/data/translate.csv"
     french, english = load(path)
-    for_training = french + english
-    tokenizer = Tokenizer()
-    tokenizer.train(for_training)
-    french_token = tokenizer.call(french, 0)
-    english_token = tokenizer.call(english, 0)
-    dataset = encode_using_tensorflow([french_token, english_token])
-if __name__ == "__main__":
-    main()
+    tokenizer = Tokenizer(get_file = get_file)
+    if not get_file :
+        for_training = french + english
+        tokenizer.train(for_training)
 
+    french_train, french_test, english_train, english_test = train_test_split(
+            french, english, test_size = ratio)
+    print(french_train)
+    print("autre = ")
+    print(french_test)
+    
+    french_token_train = tokenizer.call(french_train, 0)
+    english_token_train = tokenizer.call(english_train, 0)
+    french_token_test = tokenizer.call(french_test, 0)
+    english_token_test = tokenizer.call(english_test, 0)
+    train = [french_token_train, english_token_train]
+    test = [french_token_test, english_token_test]
+    return tokenizer, train, test

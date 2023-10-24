@@ -63,9 +63,6 @@ class Transformer(tf.keras.Model):
         return {"loss":self.loss_metric.result()}
 
     def generate(self, inputs, tokenizer):
-        if isinstance(inputs, str):
-            inputs = tokenizer.call([inputs], padding = 0)
-            inputs = tf.convert_to_tensor(inputs)
         bs = tf.shape(inputs)[0]
         enc = self.encoder(inputs)
         decoder_inputs = tf.ones((bs, 1), dtype=tf.int32) * \
@@ -77,3 +74,13 @@ class Transformer(tf.keras.Model):
             last_logit = tf.expand_dims(logits[:, -1], axis = -1)
             decoder_inputs = tf.concat([decoder_inputs,  last_logit], axis = -1)
         return decoder_inputs 
+    def predict_str(self, string, tokenizer):
+        inputs = tokenizer.call([string], padding = 0)
+        inputs = np.array(inputs)[:, 1:]
+        print(inputs)
+        print("source = ", tokenizer.decode(inputs[0]))
+        predicted = self.generate(inputs, tokenizer)
+        str_predicted = tokenizer.decode(predicted.numpy()[0])
+        return str_predicted
+
+         
