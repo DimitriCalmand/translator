@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
 from tensorflow.data import Dataset 
+import tensorflow as tf
 from sklearn.model_selection import train_test_split
 import json
+from dataset import Dataset as dt
 
 def load(path:str):
     df = pd.read_csv(path)
@@ -111,15 +113,6 @@ class Tokenizer:
             self.max_word = properties["max_word"]
             self.max_lenght = properties["max_lenght"]
         
-def encode_using_hugging():
-    """ man page
-    https://huggingface.co/docs/transformers/model_doc/gpt2#transformers.GPT2Config """
-
-    from transformers import GPT2Tokenizer
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    tokenize_output = tokenizer(word)["input_ids"]
-    return tokenize_output
-
 def encode_using_tensorflow(data:list, batch_size:int=64):
     def transform(inputs, outputs):
         return (
@@ -142,10 +135,7 @@ def get_data(ratio = 0.2, get_file = False):
 
     french_train, french_test, english_train, english_test = train_test_split(
             french, english, test_size = ratio)
-    print(french_train)
-    print("autre = ")
-    print(french_test)
-    
+
     french_token_train = tokenizer.call(french_train, 0)
     english_token_train = tokenizer.call(english_train, 0)
     french_token_test = tokenizer.call(french_test, 0)
@@ -153,3 +143,28 @@ def get_data(ratio = 0.2, get_file = False):
     train = [french_token_train, english_token_train]
     test = [french_token_test, english_token_test]
     return tokenizer, train, test
+def apply_tokenizer(tokenizer, x):
+    english_train = x['en']
+    french_train = x['fr']
+    print(english_train)
+    inputs = tokenizer.call(french_train, 0)
+    outputs = tokenizer.call(english_train, 0)
+    res = (
+            {"encoder_inputs":inputs[:, 1:], "decoder_inputs":outputs[:, :-1]},
+            {"outputs": outputs[:, 1:]}
+            )
+    return res
+
+def main():
+    file = '../data/translate.csv'
+    data = tf.data.experimental.make_csv_dataset(
+            file,
+            9, #batch_size
+            column_names = ['en', 'fr'],
+            shuffle = False,
+            )
+    tokenizer = Tokenizer(get_file = True)
+    data = data.map(lambda x: apply_tokenizer(tokenizer, x))
+    for i in data:
+        print(i[0]['fr'][0].numpy().decode("utf-8"))
+        break

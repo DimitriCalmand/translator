@@ -7,8 +7,8 @@ from time import time
 from encode import *
 CHECKPOINT_PATH = "training_1/cp.ckpt"
 
-def training(get_checkpoint, stop_early = False):
-    tokenizer, train, test = get_data(ratio = 0.1, get_file = get_checkpoint)
+def training(get_checkpoint, get_tokenizer = False, stop_early = False):
+    tokenizer, train, test = get_data(ratio = 0.1, get_file = get_tokenizer)
     ds_train = encode_using_tensorflow(train, batch_size = 64)
     ds_test = encode_using_tensorflow(train, batch_size = 4)
     loss_fn = tf.keras.losses.CategoricalCrossentropy(
@@ -50,7 +50,7 @@ def create_model(msl, vs, get_checkpoint : bool):
     return model 
 def main():
     stop_early = False 
-    model, tokenizer = training(False, stop_early = stop_early)
+    model, tokenizer = training(False, get_tokenizer = False, stop_early = stop_early)
     if stop_early : 
         string = "en Ontario ."
         print(model.predict_str(string , tokenizer))
