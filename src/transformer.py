@@ -39,7 +39,6 @@ class Transformer(tf.keras.Model):
                 dropout=0.0
                 )
         self.epoch = 0
-        self.tokenizer = None
         self.linear = tf.keras.layers.Dense(vocab_size, activation="softmax")
     def call(self, inputs, training = False):
         encoder_inputs = inputs[0]
@@ -48,30 +47,14 @@ class Transformer(tf.keras.Model):
         decoder = self.decoder([decoder_inputs, encoder], training = training)
         linear = self.linear(decoder)
         return linear
-    def load_data(self, data):
-        fr, en = data['fr'], data['en']
-        print(fr, "\n\n\n")
-        for i in next(fr):
-            print(i)
-        encoder_inputs = self.tokenizer.texts_to_sequences(fr) 
-        decoder_inputs = self.tokenizer.texts_to_sequences(en) 
-        encoder_inputs = tf.keras.utils.pad_sequences(
-                encoder_inputs,
-                maxlen = self.max_sequence_length,
-                padding='post'
-                )
-        decoder_inputs = tf.keras.utils.pad_sequences(
-                decoder_inputs,
-                maxlen = self.max_sequence_length,
-                padding='post'
-                )
-        return encoder_inputs, decoder_input
 
     def train_step(self, batch):
-        encoder_inputs, decoder_input = self.load_data(batch)
+        encoder_inputs = batch[0]["encoder_inputs"]
+        decoder_inputs = batch[0]["decoder_inputs"]
+        true_outputs = batch[1]["outputs"]
         with tf.GradientTape() as tape:
             prediction = self([encoder_inputs, decoder_inputs])
-            true_one_hot = tf.one_hot(decoder_inputs, depth = self.vocab_size)
+            true_one_hot = tf.one_hot(true_outputs, depth = self.vocab_size)
             loss = self.compiled_loss(true_one_hot, prediction)
         trainable_variable = self.trainable_variables
         gradient_tape = tape.gradient(loss, trainable_variable)

@@ -5,20 +5,30 @@ from callback import DisplayOutputs
 from time import time
 #from tensorflow_encode import load
 from encode import *
-from dataset import Dataset
+from dataset import * 
 
 CHECKPOINT_PATH = "training_1/cp.ckpt"
 
 def training(get_checkpoint, get_tokenizer = False, stop_early = False):
     tokenizer = Tokenizer(get_file = get_tokenizer)
-    dataset = Dataset("../data/translator.csv", tokenizer, 9)
-    
+    dataset = CustomDataset("../data/translate.csv", batch_size = 10)
+    _, train, test = get_data(get_file = get_tokenizer) 
+    dataset1 = encode_using_tensorflow(train, batch_size = 3)
+    print(dataset1)
+    print(dataset)
+    for i in dataset:
+        print(i)
+        break
+    return None, None 
     loss_fn = tf.keras.losses.CategoricalCrossentropy(
             label_smoothing = 0.1
             )
     #batch_test = iter(ds_test)
     optimizer = tf.keras.optimizers.Adam()
-    model = create_model(50, 1000, get_checkpoint = get_checkpoint)
+    model = create_model(
+            tokenizer.max_lenght,
+            tokenizer.max_word,
+            get_checkpoint = get_checkpoint)
     model.tokenizer = tokenizer
     #cp_callback = tf.keras.callbacks.ModelCheckpoint(
     #                                             filepath=CHECKPOINT_PATH,
@@ -53,7 +63,7 @@ def create_model(msl, vs, get_checkpoint : bool):
     return model 
 def main():
     stop_early = False 
-    model, tokenizer = training(False, get_tokenizer = False, stop_early = stop_early)
+    model, tokenizer = training(False, get_tokenizer = True, stop_early = stop_early)
     if stop_early : 
         string = "en Ontario ."
         print(model.predict_str(string , tokenizer))
