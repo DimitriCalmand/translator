@@ -17,4 +17,7 @@ def main():
     elif args == 'tf_encode':
         import tensorflow_encode as te
         te.main() 
+    elif args == 'train':
+        import train_tokenizer  
+        pass
 main()

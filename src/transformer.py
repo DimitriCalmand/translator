@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-
+from utils import *
 from encoder_layer import TransformerEncoder
 from decoder_layer import TransformerDecoder
 
@@ -62,11 +62,10 @@ class Transformer(tf.keras.Model):
         self.loss_metric.update_state(loss)
         return {"loss":self.loss_metric.result()}
 
-    def generate(self, inputs, tokenizer):
+    def generate(self, inputs):
         bs = tf.shape(inputs)[0]
         enc = self.encoder(inputs)
-        decoder_inputs = tf.ones((bs, 1), dtype=tf.int32) * \
-               tokenizer.config[tokenizer.start_token]
+        decoder_inputs = tf.ones((bs, 1), dtype=tf.int32) * START_TOKEN
         for i in range(self.max_sequence_length - 1):
             decoder_out = self.decoder([decoder_inputs, enc])
             logits = self.linear(decoder_out)
@@ -74,13 +73,20 @@ class Transformer(tf.keras.Model):
             last_logit = tf.expand_dims(logits[:, -1], axis = -1)
             decoder_inputs = tf.concat([decoder_inputs,  last_logit], axis = -1)
         return decoder_inputs 
-    def predict_str(self, string, tokenizer):
-        inputs = tokenizer.call([string], padding = 0)
-        inputs = np.array(inputs)[:, 1:]
+    def predict_str(self, string):
+        tokens = tokenizer_fr.sequences_to_texts(string)
+        tokens  = pad_sequences(
+                tokens,
+                max_lenght = MAX_LENGHT,
+                padding = 'post',
+                truncating = 'post'
+                )
+
+        inputs = np.array(tokens)[:, 1:]
         print(inputs)
-        print("source = ", tokenizer.decode(inputs[0]))
-        predicted = self.generate(inputs, tokenizer)
-        str_predicted = tokenizer.decode(predicted.numpy()[0])
+        print("source = ", string) 
+        predicted = self.generate(inputs)
+        str_predicted = tokenizer_en.sequence_to_text(predicted)[0]
         return str_predicted
 
          

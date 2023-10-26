@@ -1,42 +1,53 @@
 import tensorflow as tf
 import pandas as pd
-from itertools import cycle
 import numpy as np
-import os
-from encode import * 
+from utils import *
+from time import time
 
-def _preprocess(self, data, tokenizer):
-    fr = tf.strings.regex_replace(data, "old_string", "new_string")
-    en = tf.strings.regex_replace(data, "How", "new_string")
-    return en 
-def _preprocess_map(self,x, tokenizer):
-    return _preprocess(x, tokenizer)
-
-tokenizer = Tokenizer(get_file = True)
 class CustomDataset(tf.data.Dataset):
     def _generator(input_file_path, chunksize):
         input_file_path = input_file_path.decode("utf-8")
         df = pd.read_csv(input_file_path, chunksize=chunksize);
-        for row in df:
-            inputs = np.array(tokenizer.call(row['fr'].tolist()))
-            outputs = np.array(tokenizer.call(row['en'].tolist()))
+        for data in df:
+            tps = time()            
+            fr, en = data['fr'].fillna(''), data['en'].fillna('')  # Remplacez les valeurs NaN par des chaînes vides
+            fr, en = fr.tolist(), en.tolist()
+
+            fr = [START_WORD + ' ' + sentence + ' ' + END_WORD for sentence in fr]
+            en = [START_WORD + ' ' + sentence + ' ' + END_WORD for sentence in en]
+
+            inputs = tokenizer_fr.texts_to_sequences(fr) 
+            outputs = tokenizer_en.texts_to_sequences(en)
+            inputs = pad_sequences(
+                    inputs, 
+                    maxlen=MAX_LENGHT, 
+                    padding='post', 
+                    truncating='post'
+                    )
+
+            outputs = pad_sequences(
+                    outputs, 
+                    maxlen=MAX_LENGHT, 
+                    padding='post', 
+                    truncating='post'
+                    )
+            print("\ntime = ", time() - tps, "\n")
             res = (
                 {"encoder_inputs":inputs[:, 1:], "decoder_inputs":outputs[:, :-1]},
                 {"outputs": outputs[:, 1:]}
                 )
 
             yield res 
-
-    def __new__(cls, input_file_path, batch_size=100):
+    def __new__(cls, input_file_path, batch_size=BATCH_SIZE):
         dataset = tf.data.Dataset.from_generator(
             cls._generator,
             output_signature=(
                 {
-                    "encoder_inputs": tf.TensorSpec(shape=(batch_size, 76), dtype=tf.int32),
-                    "decoder_inputs": tf.TensorSpec(shape=(batch_size, 76), dtype=tf.int32)
+                    "encoder_inputs": tf.TensorSpec(shape=(None, MAX_LENGHT - 1), dtype=tf.int32),
+                    "decoder_inputs": tf.TensorSpec(shape=(None, MAX_LENGHT - 1), dtype=tf.int32)
                     }, 
                 {
-                    "outputs": tf.TensorSpec(shape=(batch_size, 76), dtype=tf.int32),  
+                    "outputs": tf.TensorSpec(shape=(None, MAX_LENGHT - 1), dtype=tf.int32),  
                     }
             ),
             args=(input_file_path, batch_size)

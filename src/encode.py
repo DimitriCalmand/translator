@@ -17,7 +17,8 @@ class Tokenizer:
             special_char = ",.?!':;|",
             start_token = '<',
             end_token = '>',
-            get_file = False 
+            get_file = False,
+            max_lenght = 100 
             ):
 
         self.special_char = special_char
@@ -25,14 +26,18 @@ class Tokenizer:
         self.saver_properties = 'saver/saver_properties.json'
         if not get_file :
             self.config = {}
-            self.max_lenght = 0
-            self.max_word = max_word 
+            self.max_lenght = max_lenght 
+            self.cur_max_word = max_word 
+            self.max_word = max_word
         else:
             self.get()
+        
         self.recurent_word = {}
         self.start_token = start_token
         self.end_token = end_token
-
+        self.mean = 0
+        self.nb = 0
+        self.w = 0
     @property
     def nb_word(self):
         return len(self.config)
@@ -42,12 +47,20 @@ class Tokenizer:
         self.config[self.start_token] = 2
         self.config[self.end_token] = 3
         for sentence in input:
+            if isinstance(sentence, float):
+                self.w += 1
+                continue
             for char in self.special_char :
                 sentence = sentence.replace(char, ' '+char)
             sentence = sentence.replace("  ", ' ')
             list_word = sentence.split(' ')
+            if (len(list_word) + 2 > self.max_lenght):
+                self.w += 1
+                continue
             prev = self.max_lenght
-            self.max_lenght = max(self.max_lenght, len(list_word) + 2)
+            self.mean += len(list_word)
+            self.nb += 1
+            #self.max_lenght = max(self.max_lenght, len(list_word) + 2)
             for word in list_word:
                 if word in self.recurent_word:
                     self.recurent_word[word] += 1
@@ -59,7 +72,7 @@ class Tokenizer:
             if index >= self.max_word-1:
                 break
             self.config[key] = index+4 
-        self.max_word = len(self.config) + 1
+        self.cur_max_word = len(self.config) + 1
     def call(self, sentence, padding=0):
         if isinstance(sentence, tuple):
             return (self.call(sentence[0], self.call(sentence[1])))
@@ -101,7 +114,7 @@ class Tokenizer:
 
         with open(self.saver_properties, 'w') as f: 
             properties = {
-                "max_word" : self.max_word,
+                "cur_max_word" : self.max_word,
                 "max_lenght" : self.max_lenght
                 }
             json.dump(properties, f)
@@ -112,7 +125,7 @@ class Tokenizer:
 
         with open(self.saver_properties, 'r') as f:
             properties = json.load(f)
-            self.max_word = properties["max_word"]
+            self.cur_max_word = properties["cur_max_word"]
             self.max_lenght = properties["max_lenght"]
         
 def encode_using_tensorflow(data:list, batch_size:int=64):
