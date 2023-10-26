@@ -3,6 +3,7 @@ import numpy as np
 from tensorflow.data import Dataset 
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.preprocessing.text import Tokenizer
 import json
 from dataset import Dataset as dt
 
@@ -19,6 +20,7 @@ class Tokenizer:
             end_token = '>',
             get_file = False 
             ):
+
         self.special_char = special_char
         self.saver_config = 'saver/saver_config.json'
         self.saver_properties = 'saver/saver_properties.json'
@@ -69,6 +71,7 @@ class Tokenizer:
             return res
         for char in self.special_char :
             sentence = sentence.replace(char, ' '+char)
+
         sentence = sentence.replace("  ", ' ')
         list_word = sentence.split(' ')
         res = [self.config[self.start_token]]
@@ -146,7 +149,6 @@ def get_data(ratio = 0.2, get_file = False):
 def apply_tokenizer(tokenizer, x):
     english_train = x['en']
     french_train = x['fr']
-    print(english_train)
     inputs = tokenizer.call(french_train, 0)
     outputs = tokenizer.call(english_train, 0)
     res = (
@@ -163,8 +165,8 @@ def main():
             column_names = ['en', 'fr'],
             shuffle = False,
             )
-    tokenizer = Tokenizer(get_file = True)
+    
     data = data.map(lambda x: apply_tokenizer(tokenizer, x))
     for i in data:
-        print(i[0]['fr'][0].numpy().decode("utf-8"))
+        print(i)
         break

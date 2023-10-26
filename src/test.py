@@ -14,4 +14,7 @@ def main():
     elif args == 'trash':
         import trash
         trash.main()
+    elif args == 'tf_encode':
+        import tensorflow_encode as te
+        te.main() 
 main()
