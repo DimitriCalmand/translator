@@ -1,35 +1,50 @@
-import h5py
+import h5py as h5
 import numpy as np
-
-# Création des données pour l'exemple
-data_chunk = 1000000
-data_total = 12000000
-data = np.random.random((data_chunk, 200))
-
-# Sauvegarde du premier morceau dans un fichier HDF5
-with h5py.File('data.h5', 'w') as hf:
-    dset = hf.create_dataset('data', data=data, maxshape=(data_total, 200), chunks=(data_chunk, 200))
-
-# Ajouter des données par morceaux
-with h5py.File('data.h5', 'a') as hf:
-    for i in range(1, data_total // data_chunk):
-        data = np.random.random((data_chunk, 200))
-        hf["data"].resize(hf["data"].shape[0] + data.shape[0], axis=0)
-        hf["data"][-data.shape[0]:] = data
-
-# Vérification des formes
-from time import time
-tps = time()
-with h5py.File('data.h5', 'r') as hf:
-    data_loaded = hf["data"][:]
-    data_loaded = np.array(data_loaded)
-
-# Conversion en format Keras dataset
-data_loaded = np.expand_dims(data_loaded, axis=0)
-print(data_load.shape)
-print(time() - tps)
-# Vérification des formes
-print(data_loaded)  # Assurez-vous que la forme est bien (3, 10)
-def main():
-    pass
+import time
+import psutil
+process = psutil.Process()
+memory_info = process.memory_info()
+print(f"Utilisation actuelle de la mémoire (en mégaoctets) : {memory_info.rss / (1024 ** 2)}")
+File_Name_HDF5='Test.h5'
+shape = (10000000, 200)
+chunk_shape=(100000, 200)
+#Array=np.array(np.random.rand(shape[0]),np.float32)
+#
+##We are using 4GB of chunk_cache_mem here ("rdcc_nbytes")
+#f = h5.File(File_Name_HDF5, 'w',rdcc_nbytes = 1024**2*4000,rdcc_nslots=1e7)
+#d = f.create_dataset('Test', shape ,dtype=np.float32,chunks=chunk_shape)
+#
+##Writing columns
+#t1=time.time()
+#
+#for i in range(0,shape[1]):
+#    d[:,i:i+1]=np.expand_dims(Array, 1)
+#
+#f.close()
+#
+#print(time.time()-t1)
+#
+## Reading random rows
+## If we read one row there are actually 100 read, but if we access a row
+## which is already in cache we would see a huge speed up.
+memory_info = process.memory_info()
+import os 
+print(f"At start Utilisation actuelle de la mémoire (en mégaoctets) : {memory_info.rss / (1024 ** 2)}")
+f = h5.File(File_Name_HDF5,'r',rdcc_nbytes=1024**2*4000,rdcc_nslots=1e7)
+d = f["Test"]
+print(d.shape)
+for j in range(0,1000):
+    t1=time.time()
+    # With more iterations it will be more likely that we hit a already cached row
+    size = chunk_shape[0]
+    e = j % 10 
+    array = d[size * e : size * (e + 1), :]
+    #inds=np.random.randint(0, high=shape[0]-1, size=1000)
+    #for i in range(0,inds.shape[0]):
+    #    Array=np.copy(d[inds[i],:])
+    #memory_info = process.memory_info()
+    #print(f"Utilisation actuelle de la mémoire (en mégaoctets) : {memory_info.rss / (1024 ** 2)}")
+    del array
+    print(os.system("free"))
+f.close()
 

@@ -9,8 +9,8 @@ from dataset import *
 CHECKPOINT_PATH = "training_1/cp.ckpt"
 
 def training(get_checkpoint, stop_early = False):
-    ds_train = CustomDataset("../data/train.csv", batch_size = BATCH_SIZE)
-    ds_test = CustomDataset("../data/test.csv", batch_size = BATCH_SIZE)
+    ds_train = CustomDataset("../data/preprocess.h5", batch_size = 100)
+    ds_test = CustomDataset("../data/preprocess.h5", batch_size = 100)
 
     loss_fn = tf.keras.losses.CategoricalCrossentropy(
             label_smoothing = 0.1

@@ -18,6 +18,8 @@ def main():
         import tensorflow_encode as te
         te.main() 
     elif args == 'train':
-        import train_tokenizer  
+        import train_tokenizer as tt
+        tt.main()
+        
         pass
 main()
