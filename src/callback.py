@@ -1,22 +1,7 @@
 import tensorflow as tf
 import keras
-
+from encode import *
 from utils import *
-def remove_zeros(tensor):
-    tensor = tf.boolean_mask(tensor, tf.not_equal(tensor, 0))
-    return tensor
-def pretty_print(liste):
-    liste = liste.split(" ")
-    res = ""
-    for string in liste:
-        if (string == START_WORD or string == END_WORD):
-            continue
-        res += string + " "
-    return res
-def decode(tensor, tokenizer):
-    tensor = [remove_zeros(tensor).numpy()]
-    liste = tokenizer.sequences_to_texts(tensor)
-    return pretty_print(liste[0])
 
 class DisplayOutputs(keras.callbacks.Callback):
     def __init__(self, batch, verbose = 10, model = None):
@@ -30,7 +15,7 @@ class DisplayOutputs(keras.callbacks.Callback):
         if (epoch + 1) % self. verbose == 0:
             batch = next(self.batch)
             print()
-            for i in range(4):
+            for i in range(1):
                 source = batch[0]["encoder_inputs"].numpy()[i:i+1]
                 target = batch[0]["decoder_inputs"].numpy()[i:i+1]
                 predicted = self.model.generate(source)

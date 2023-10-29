@@ -1,42 +1,72 @@
-from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.text import Tokenizer, text_to_word_sequence
 import numpy as np
 import pandas as pd
 from time import time
 import pickle
 import h5py as h5
-
 from utils import *
+from encode import *
+
+def add_special_token(tokenizer):
+    word_index = {
+            '<oov>' : 1,
+            START_WORD : 2,
+            END_WORD : 3,
+            NUMBER_WORD : 4,
+            MAIL_WORD : 5,
+            NAME_WORD : 6
+            }
+    for v, k in tokenizer.word_index.items():
+        if  k == 1:
+            continue
+        word_index[v] = k + NB_SPECIAL_WORD
+    index_word = {v: k for k, v in word_index.items()}
+    tokenizer.word_index = word_index 
+    tokenizer.index_word = index_word
+
 def train_tokenizer():
     df = pd.read_csv('../data/translate.csv', chunksize = CHUNK_SIZE)
-    
     tokenizer_fr = Tokenizer(
             num_words=NUM_WORDS,
             oov_token = "<oov>",
+            filters='.'
             )
     tokenizer_en = Tokenizer(
             num_words=NUM_WORDS,
             oov_token = "<oov>",
+            filters='.'
             )
-    
     i = 0
-    
+    median = []
     for data in df:
         fr, en = data['fr'].fillna(''), data['en'].fillna('')  # Remplacez les valeurs NaN par des chaînes vides
         fr, en = fr.tolist(), en.tolist()
-        fr = [START_WORD + ' ' + sentence + ' ' + END_WORD for sentence in fr]
-        en = [START_WORD + ' ' + sentence + ' ' + END_WORD for sentence in en]
+        for string in fr:
+            string = string.split(' ')
+            median.append(len(string))
         tokenizer_fr.fit_on_texts(fr)
         tokenizer_en.fit_on_texts(en)
         if i % 10 == 0:
             print(i*CHUNK_SIZE, "/", 12000000) 
         i += 1
-    
+    median.sort()
+    print("median = ", median[len(median) // 2])
+    print("moyenne = ", sum(median) / len(median))
+    print("number word fr = ", len(tokenizer_fr.word_index))
+    print("number word en = ", len(tokenizer_en.word_index))
+    add_special_token(tokenizer_fr)
+    add_special_token(tokenizer_en)
+
     with open('saver/tokenizer_fr.pkl', 'wb') as f:
         pickle.dump(tokenizer_fr, f)
     with open('saver/tokenizer_en.pkl', 'wb') as f:
         pickle.dump(tokenizer_en, f)
 
 def preprocess(old_path, new_path):
+    with open('saver/tokenizer_fr.pkl', 'rb') as f:
+        tokenizer_fr = pickle.load(f)
+    with open('saver/tokenizer_en.pkl', 'rb') as f:
+        tokenizer_en = pickle.load(f)
     with open(old_path, 'r') as fp:
         nb_line = sum(1 for line in fp if line.rstrip()) - 1
     print("number of line is :", nb_line)
@@ -59,31 +89,14 @@ def preprocess(old_path, new_path):
     i = 0
     for data in df:
         fr, en = data['fr'].fillna(''), data['en'].fillna('') 
-
-        fr = [START_WORD + ' ' + sentence + ' ' + END_WORD for sentence in fr]
-        en = [START_WORD + ' ' + sentence + ' ' + END_WORD for sentence in en]
-
-        inputs = tokenizer_fr.texts_to_sequences(fr) 
-        outputs = tokenizer_en.texts_to_sequences(en)
-
-        inputs = pad_sequences(
-                inputs, 
-                maxlen=MAX_LENGHT, 
-                padding='post', 
-                truncating='post'
-                )
-
-        outputs = pad_sequences(
-                outputs, 
-                maxlen=MAX_LENGHT, 
-                padding='post', 
-                truncating='post'
-                )
+        inputs = encode(fr.tolist(), 'fr')
+        outputs = encode(en.tolist(), 'en')
         res = np.array([inputs, outputs])
         d[:, i * CHUNK_SIZE : (i + 1) * CHUNK_SIZE, :] =  res
         print(f"data {i}, is ok")
         i += 1
     f.close()
+
 def main():
     train_tokenizer()
     preprocess("../data/translate.csv", "../data/preprocess.h5")

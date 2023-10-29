@@ -9,9 +9,8 @@ from dataset import *
 CHECKPOINT_PATH = "training_1/cp.ckpt"
 
 def training(get_checkpoint, stop_early = False):
-    ds_train = CustomDataset("../data/preprocess.h5", batch_size = 100)
-    ds_test = CustomDataset("../data/preprocess.h5", batch_size = 100)
-
+    ds_train = CustomDataset("../data/preprocess.h5", batch_size = BATCH_SIZE)
+    ds_test = CustomDataset("../data/preprocess.h5", batch_size = BATCH_SIZE)
     loss_fn = tf.keras.losses.CategoricalCrossentropy(
             label_smoothing = 0.1
             )
@@ -37,7 +36,7 @@ def create_model(get_checkpoint : bool):
             nb_encoder = 1,
             nb_decoder = 1,
             nb_heads = 1,
-            embed_dim = 128,
+            embed_dim = 128, 
             feed_forward_dim = 100,
             max_sequence_length = MAX_LENGHT, 
             vocab_size = NUM_WORDS 

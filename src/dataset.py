@@ -7,6 +7,7 @@ import h5py as h5
 
 class CustomDataset(tf.data.Dataset):
     def _generator(input_file_path, batch_size):
+        tps = time()
         input_file_path = input_file_path.decode("utf-8")
         f = h5.File(
                 input_file_path,
