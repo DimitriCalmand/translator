@@ -3,6 +3,11 @@ import keras
 from encode import *
 from utils import *
 
+class SummaryCallback(tf.keras.callbacks.Callback):
+    def on_train_begin(self, logs=None):
+        self.model.predict_str("salut") 
+        self.model.summary()
+
 class DisplayOutputs(keras.callbacks.Callback):
     def __init__(self, batch, verbose = 10, model = None):
         """Displays a batch of outputs after every epoch"""

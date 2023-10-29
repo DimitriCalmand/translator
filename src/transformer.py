@@ -1,11 +1,11 @@
 import tensorflow as tf
 import numpy as np
 from utils import *
+from encode import *
 from encoder_layer import TransformerEncoder
 from decoder_layer import TransformerDecoder
 
 class Transformer(tf.keras.Model):
-
     def __init__(self,
             nb_encoder,
             nb_decoder,
@@ -60,6 +60,7 @@ class Transformer(tf.keras.Model):
         gradient_tape = tape.gradient(loss, trainable_variable)
         self.optimizer.apply_gradients(zip(gradient_tape, trainable_variable))
         self.loss_metric.update_state(loss)
+        self.summary()
         return {"loss":self.loss_metric.result()}
 
     def generate(self, inputs):
@@ -75,19 +76,10 @@ class Transformer(tf.keras.Model):
             decoder_inputs = tf.concat([decoder_inputs,  last_logit], axis = -1)
         return decoder_inputs 
     def predict_str(self, string):
-        tokens = tokenizer_fr.sequences_to_texts(string)
-        tokens  = pad_sequences(
-                tokens,
-                max_lenght = MAX_LENGHT,
-                padding = 'post',
-                truncating = 'post'
-                )
-
+        tokens = encode([string])
         inputs = np.array(tokens)[:, 1:]
-        print(inputs)
-        print("source = ", string) 
         predicted = self.generate(inputs)
-        str_predicted = tokenizer_en.sequence_to_text(predicted)[0]
+        str_predicted = decode(predicted, tokenizer_fr) 
         return str_predicted
 
          

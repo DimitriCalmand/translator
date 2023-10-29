@@ -25,7 +25,7 @@ def add_special_token(tokenizer):
     tokenizer.index_word = index_word
 
 def train_tokenizer():
-    df = pd.read_csv('../data/translate.csv', chunksize = CHUNK_SIZE)
+    df = pd.read_csv('../data/big_translate.csv', chunksize = CHUNK_SIZE)
     tokenizer_fr = Tokenizer(
             num_words=NUM_WORDS,
             oov_token = "<oov>",
@@ -98,5 +98,5 @@ def preprocess(old_path, new_path):
     f.close()
 
 def main():
-    train_tokenizer()
-    preprocess("../data/translate.csv", "../data/preprocess.h5")
+    #train_tokenizer()
+    preprocess("../data/test.csv", "../data/test.h5")
