@@ -25,9 +25,9 @@ class DisplayOutputs(keras.callbacks.Callback):
                 target = batch[0]["decoder_inputs"].numpy()[i:i+1]
                 predicted = self.model.generate(source)
 
-                str_predicted = decode(predicted, tokenizer_en)
-                str_target = decode(target, tokenizer_en)
-                str_source = decode(source, tokenizer_fr)
+                str_predicted = decode(predicted, tokenizer_en, None)[0]
+                str_target = decode(target, tokenizer_en, None)[0]
+                str_source = decode(source, tokenizer_fr, None)[0]
 
                 print('-'*80)
                 print('source : ', str_source)

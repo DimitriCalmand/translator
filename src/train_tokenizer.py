@@ -25,7 +25,7 @@ def add_special_token(tokenizer):
     tokenizer.index_word = index_word
 
 def train_tokenizer():
-    df = pd.read_csv('../data/big_translate.csv', chunksize = CHUNK_SIZE)
+    df = pd.read_csv('../data/translate.csv', chunksize = CHUNK_SIZE)
     tokenizer_fr = Tokenizer(
             num_words=NUM_WORDS,
             oov_token = "<oov>",
@@ -57,15 +57,15 @@ def train_tokenizer():
     add_special_token(tokenizer_fr)
     add_special_token(tokenizer_en)
 
-    with open('saver/tokenizer_fr.pkl', 'wb') as f:
+    with open('../data/saver/tokenizer_fr.pkl', 'wb') as f:
         pickle.dump(tokenizer_fr, f)
-    with open('saver/tokenizer_en.pkl', 'wb') as f:
+    with open('../data/saver/tokenizer_en.pkl', 'wb') as f:
         pickle.dump(tokenizer_en, f)
 
 def preprocess(old_path, new_path):
-    with open('saver/tokenizer_fr.pkl', 'rb') as f:
+    with open('../data/saver/tokenizer_fr.pkl', 'rb') as f:
         tokenizer_fr = pickle.load(f)
-    with open('saver/tokenizer_en.pkl', 'rb') as f:
+    with open('../data/saver/tokenizer_en.pkl', 'rb') as f:
         tokenizer_en = pickle.load(f)
     with open(old_path, 'r') as fp:
         nb_line = sum(1 for line in fp if line.rstrip()) - 1
@@ -99,4 +99,11 @@ def preprocess(old_path, new_path):
 
 def main():
     #train_tokenizer()
-    preprocess("../data/test.csv", "../data/test.h5")
+    #preprocess("../data/train.csv", "../data/train.h5")
+    #preprocess("../data/test.csv", "../data/test.h5")
+    dico = []
+    res = encode(["il ert probablement"], dico)
+    print(res)
+    decoder = decode(res, tokenizer_fr, dico)
+    print(decoder)
+    
