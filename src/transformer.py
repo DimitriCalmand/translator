@@ -60,11 +60,10 @@ class Transformer(tf.keras.Model):
         gradient_tape = tape.gradient(loss, trainable_variable)
         self.optimizer.apply_gradients(zip(gradient_tape, trainable_variable))
         self.loss_metric.update_state(loss)
-        self.summary()
         return {"loss":self.loss_metric.result()}
 
     def generate(self, inputs):
-        print(self.loss_metric.result())
+        print("loss = ", self.loss_metric.result().numpy())
         bs = tf.shape(inputs)[0]
         enc = self.encoder(inputs)
         decoder_inputs = tf.ones((bs, 1), dtype=tf.int32) * START_TOKEN

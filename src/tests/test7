@@ -1,0 +1,22 @@
+nb_encoder=1
+nb_decoder=1
+nb_heads=1
+embed_dim=256
+feed_forward_dim=100
+max_lenght=30
+num_words=3000
+
+loss =  1.3641065
+--------------------------------------------------------------------------------
+source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
+target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
+Prediction:  in <number> his work on the idea to determine the <oov> <oov> the <oov> national research council of canada 
+--------------------------------------------------------------------------------
+
+loss =  1.1876627
+--------------------------------------------------------------------------------
+source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
+target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
+Prediction:  from <number> to <number> he was confirmed by <oov> a new <oov> <oov> centre and the sudbury neutrino observatory that the <oov> concentrated into the same feat 
+--------------------------------------------------------------------------------
+time execution =  118.59294319152832

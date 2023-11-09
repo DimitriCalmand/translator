@@ -1,0 +1,22 @@
+nb_encoder=4
+nb_decoder=1
+nb_heads=1
+embed_dim=128
+feed_forward_dim=100
+max_lenght=30
+num_words=3000
+
+loss =  2.026576
+--------------------------------------------------------------------------------
+source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
+target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
+Prediction:  in <number> he became a professor for stellar astrophysics at the university of toronto 
+--------------------------------------------------------------------------------
+
+loss =  1.536198
+--------------------------------------------------------------------------------
+source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
+target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
+Prediction:  the canadian participation in the observatory is managed by the national research council of canada’s herzberg institute of astrophysics 
+--------------------------------------------------------------------------------
+time execution =  113.23350048065186

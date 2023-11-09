@@ -1,0 +1,22 @@
+nb_encoder=1
+nb_decoder=1
+nb_heads=1
+embed_dim=32
+feed_forward_dim=100
+max_lenght=30
+num_words=3000
+
+loss =  2.788546
+--------------------------------------------------------------------------------
+source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
+target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
+Prediction:  in <number> he received his bachelor’s degree from the <oov> <oov> <oov> <oov> 
+--------------------------------------------------------------------------------
+
+loss =  1.969032
+--------------------------------------------------------------------------------
+source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
+target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
+Prediction:  in the early <number> he was the royal astronomical society of cosmic radiation emitted 
+--------------------------------------------------------------------------------
+time execution =  37.43385457992554

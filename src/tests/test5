@@ -1,0 +1,22 @@
+nb_encoder=1
+nb_decoder=4
+nb_heads=1
+embed_dim=128
+feed_forward_dim=100
+max_lenght=30
+num_words=3000
+
+loss =  1.322576
+--------------------------------------------------------------------------------
+source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
+target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
+Prediction:  in <number> <oov> <oov> frank <oov> including being elected as a partnership agreement was named visible in victoria 
+--------------------------------------------------------------------------------
+
+loss =  1.1931446
+--------------------------------------------------------------------------------
+source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
+target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
+Prediction:  when world war ii <oov> in <number> to <oov> in <number> he was the solar system to an example of that became its surface <oov> 
+--------------------------------------------------------------------------------
+time execution =  144.81829237937927

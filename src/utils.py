@@ -1,11 +1,11 @@
 import pickle
 from tensorflow.keras.utils import pad_sequences
+from _config_test import *
 
 
-
-MAX_LENGHT = 30 
+MAX_LENGHT = max_lenght
 BATCH_SIZE = 32 
-NUM_WORDS = 3000 
+NUM_WORDS = num_words 
 START_WORD = '<start>'
 END_WORD = '<end>'
 NUMBER_WORD = '<number>'

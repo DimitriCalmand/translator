@@ -1,0 +1,22 @@
+nb_encoder=1
+nb_decoder=1
+nb_heads=1
+embed_dim=128
+feed_forward_dim=100
+max_lenght=30
+num_words=3000
+
+loss =  1.6591295
+--------------------------------------------------------------------------------
+source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
+target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
+Prediction:  in <number> he <oov> a professor and a new optical telescope was inaugurated in <number> in <number> 
+--------------------------------------------------------------------------------
+
+loss =  1.228105
+--------------------------------------------------------------------------------
+source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
+target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
+Prediction:  from <number> to <number> a new <oov> of toronto in <number> it was operational of toronto region <oov> the victoria named their prediction 
+--------------------------------------------------------------------------------
+time execution =  57.47865056991577

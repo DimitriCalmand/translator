@@ -4,6 +4,7 @@ import pandas as pd
 from tensorflow.keras.preprocessing.text import text_to_word_sequence
 from utils import *
 import re
+
 def remove_zeros(tensor):
     tensor = tf.boolean_mask(tensor, tf.not_equal(tensor, 0))
     return tensor
@@ -83,7 +84,6 @@ def encode(liste, list_oov = None, language = 'fr'):
                 if res[i][k] == 1:
                     tmp.append(string_split[k])
             list_oov.append(tmp)
-        
                 
     res = pad_sequences(
                 res, 

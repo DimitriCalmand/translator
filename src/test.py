@@ -20,6 +20,9 @@ def main():
     elif args == 'train':
         import train_tokenizer as tt
         tt.main()
+    elif args == 'test':
+        import _main_test as mt
+        mt.main()
         
         pass
 main()
