@@ -6,17 +6,17 @@ feed_forward_dim=100
 max_lenght=30
 num_words=3000
 
-loss =  1.6591295
+loss =  1.5467938
 --------------------------------------------------------------------------------
-source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
-target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
-Prediction:  in <number> he <oov> a professor and a new optical telescope was inaugurated in <number> in <number> 
+source :  il obtient de l'université de toronto son baccalauréat en <number> et de l'université western ontario à <oov> sa maîtrise en <number> et son doctorat en <number> 
+target :  he obtained his bachelor’s degree in <number> from the university of toronto and his master’s and doctoral degrees in <number> and <number> from the university of western ontario 
+Prediction:  he received his bachelor’s degree from the university of toronto in <number> and his master’s degree in <number> and his master’s degree in <number> and obtained his master’s degree 
 --------------------------------------------------------------------------------
 
-loss =  1.228105
+loss =  1.2358212
 --------------------------------------------------------------------------------
-source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
-target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
-Prediction:  from <number> to <number> a new <oov> of toronto in <number> it was operational of toronto region <oov> the victoria named their prediction 
+source :  matthews est astéroséismologue c'est à dire qu'il est spécialiste de l'étude des vibrations qui secouent les étoiles 
+target :  matthews is an asteroseismologist that is he specializes in the study of the vibrations pulsations that shake stars 
+Prediction:  jaymie mark matthews asteroseismologist outstanding popularizer of astronomy an interest in total eclipse 
 --------------------------------------------------------------------------------
-time execution =  57.47865056991577
+time execution =  39.53538632392883

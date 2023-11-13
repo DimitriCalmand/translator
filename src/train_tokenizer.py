@@ -25,7 +25,8 @@ def add_special_token(tokenizer):
     tokenizer.index_word = index_word
 
 def train_tokenizer():
-    df = pd.read_csv('../data/translate.csv', chunksize = CHUNK_SIZE)
+    path = '../data/small_words.csv'
+    df = pd.read_csv(path, chunksize = CHUNK_SIZE)
     tokenizer_fr = Tokenizer(
             num_words=NUM_WORDS,
             oov_token = "<oov>",
@@ -38,6 +39,8 @@ def train_tokenizer():
             )
     i = 0
     median = []
+    with open(path, 'r') as fp:
+        nb_line = sum(1 for line in fp if line.rstrip()) - 1
     for data in df:
         fr, en = data['fr'].fillna(''), data['en'].fillna('')  # Remplacez les valeurs NaN par des chaînes vides
         fr, en = fr.tolist(), en.tolist()
@@ -47,7 +50,7 @@ def train_tokenizer():
         tokenizer_fr.fit_on_texts(fr)
         tokenizer_en.fit_on_texts(en)
         if i % 10 == 0:
-            print(i*CHUNK_SIZE, "/", 12000000) 
+            print(i*CHUNK_SIZE, "/", nb_line) 
         i += 1
     median.sort()
     print("median = ", median[len(median) // 2])
@@ -89,8 +92,8 @@ def preprocess(old_path, new_path):
     i = 0
     for data in df:
         fr, en = data['fr'].fillna(''), data['en'].fillna('') 
-        inputs = encode(fr.tolist(), 'fr')
-        outputs = encode(en.tolist(), 'en')
+        inputs = encode(fr.tolist(), language = 'fr')
+        outputs = encode(en.tolist(), language =  'en')
         res = np.array([inputs, outputs])
         d[:, i * CHUNK_SIZE : (i + 1) * CHUNK_SIZE, :] =  res
         print(f"data {i}, is ok")
@@ -99,11 +102,5 @@ def preprocess(old_path, new_path):
 
 def main():
     #train_tokenizer()
-    #preprocess("../data/train.csv", "../data/train.h5")
+    preprocess("../data/small_words.csv", "../data/train.h5")
     #preprocess("../data/test.csv", "../data/test.h5")
-    dico = []
-    res = encode(["il ert probablement"], dico)
-    print(res)
-    decoder = decode(res, tokenizer_fr, dico)
-    print(decoder)
-    

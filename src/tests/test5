@@ -6,17 +6,17 @@ feed_forward_dim=100
 max_lenght=30
 num_words=3000
 
-loss =  1.322576
+loss =  1.3481954
 --------------------------------------------------------------------------------
-source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
-target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
-Prediction:  in <number> <oov> <oov> frank <oov> including being elected as a partnership agreement was named visible in victoria 
+source :  il obtient de l'université de toronto son baccalauréat en <number> et de l'université western ontario à <oov> sa maîtrise en <number> et son doctorat en <number> 
+target :  he obtained his bachelor’s degree in <number> from the university of toronto and his master’s and doctoral degrees in <number> and <number> from the university of western ontario 
+Prediction:  he obtained his bachelor’s degree from the university of toronto and in <number> and the university of toronto in berkeley where he received his master’s degree from the university 
 --------------------------------------------------------------------------------
 
-loss =  1.1931446
+loss =  1.1809913
 --------------------------------------------------------------------------------
-source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
-target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
-Prediction:  when world war ii <oov> in <number> to <oov> in <number> he was the solar system to an example of that became its surface <oov> 
+source :  matthews est astéroséismologue c'est à dire qu'il est spécialiste de l'étude des vibrations qui secouent les étoiles 
+target :  matthews is an asteroseismologist that is he specializes in the study of the vibrations pulsations that shake stars 
+Prediction:  it was the first to measure the study of stars that <oov> sources was clusters 
 --------------------------------------------------------------------------------
-time execution =  144.81829237937927
+time execution =  112.89865398406982

@@ -1,5 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 data_*
+*.swp
 data/
 src/training_1/
+src/logs
+src/saver

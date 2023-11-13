@@ -6,17 +6,17 @@ feed_forward_dim=100
 max_lenght=30
 num_words=3000
 
-loss =  1.995675
+loss =  2.0311048
 --------------------------------------------------------------------------------
-source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
-target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
-Prediction:  in <number> he <oov> a workshop on astronomy and the causes of the <oov> <oov> 
+source :  il obtient de l'université de toronto son baccalauréat en <number> et de l'université western ontario à <oov> sa maîtrise en <number> et son doctorat en <number> 
+target :  he obtained his bachelor’s degree in <number> from the university of toronto and his master’s and doctoral degrees in <number> and <number> from the university of western ontario 
+Prediction:  in <number> he became the first director of the <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> <oov> 
 --------------------------------------------------------------------------------
 
-loss =  1.4558942
+loss =  1.4675934
 --------------------------------------------------------------------------------
-source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
-target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
-Prediction:  in <number> he became a permanent member of the science <oov> that <oov> the canadian galactic plane survey a project that <oov> to map a large portion <number> degrees 
+source :  matthews est astéroséismologue c'est à dire qu'il est spécialiste de l'étude des vibrations qui secouent les étoiles 
+target :  matthews is an asteroseismologist that is he specializes in the study of the vibrations pulsations that shake stars 
+Prediction:  the <number> centimetre telescope continues to be operational and is used to track asteroids that orbit near earth 
 --------------------------------------------------------------------------------
-time execution =  168.1376175880432
+time execution =  124.2931637763977

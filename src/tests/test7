@@ -6,17 +6,17 @@ feed_forward_dim=100
 max_lenght=30
 num_words=3000
 
-loss =  1.3641065
+loss =  1.3141495
 --------------------------------------------------------------------------------
-source :  en <number> son emploi <oov> à déménager de nouveau cette fois à victoria en <oov> britannique 
-target :  in <number> newton moved again for work related <oov> this time to victoria in british columbia 
-Prediction:  in <number> his work on the idea to determine the <oov> <oov> the <oov> national research council of canada 
+source :  il obtient de l'université de toronto son baccalauréat en <number> et de l'université western ontario à <oov> sa maîtrise en <number> et son doctorat en <number> 
+target :  he obtained his bachelor’s degree in <number> from the university of toronto and his master’s and doctoral degrees in <number> and <number> from the university of western ontario 
+Prediction:  he received his bachelor’s degree from the university of toronto in quebec in <number> before moving to become a member of the university of the same feat 
 --------------------------------------------------------------------------------
 
-loss =  1.1876627
+loss =  1.1994357
 --------------------------------------------------------------------------------
-source :  de <number> à <number> il est à nouveau président du centre de victoria et en <number> toujours avec philip <oov> il produit une seconde <oov> de son livre the 
-target :  from <number> to <number> he again became president of the victoria centre and in <number> he and philip <oov> wrote a second <oov> to their book the guide 
-Prediction:  from <number> to <number> he was confirmed by <oov> a new <oov> <oov> centre and the sudbury neutrino observatory that the <oov> concentrated into the same feat 
+source :  matthews est astéroséismologue c'est à dire qu'il est spécialiste de l'étude des vibrations qui secouent les étoiles 
+target :  matthews is an asteroseismologist that is he specializes in the study of the vibrations pulsations that shake stars 
+Prediction:  the <oov> it was the state of the study of the evolution of the birth and a stars 
 --------------------------------------------------------------------------------
-time execution =  118.59294319152832
+time execution =  91.35355234146118
