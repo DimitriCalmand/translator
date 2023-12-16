@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from encoder_layer import embedding_layer
+from model.encoder_layer import embedding_layer
 
 class decoder_layer(tf.keras.layers.Layer):
     def __init__(self,

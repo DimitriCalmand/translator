@@ -1,6 +1,6 @@
 import tensorflow as tf
 import keras
-from encode import *
+from preprocess.encode import *
 from utils import *
 
 class SummaryCallback(tf.keras.callbacks.Callback):

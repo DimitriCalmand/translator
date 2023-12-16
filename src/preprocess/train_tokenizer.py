@@ -5,7 +5,7 @@ from time import time
 import pickle
 import h5py as h5
 from utils import *
-from encode import *
+from preprocess.encode import *
 
 def add_special_token(tokenizer):
     word_index = {
@@ -24,8 +24,8 @@ def add_special_token(tokenizer):
     tokenizer.word_index = word_index 
     tokenizer.index_word = index_word
 
-def train_tokenizer():
-    path = '../data/small_words.csv'
+def train_tokenizer(data_path):
+    path = f'{data_path}/dataset.csv'
     df = pd.read_csv(path, chunksize = CHUNK_SIZE)
     tokenizer_fr = Tokenizer(
             num_words=NUM_WORDS,
@@ -42,7 +42,7 @@ def train_tokenizer():
     with open(path, 'r') as fp:
         nb_line = sum(1 for line in fp if line.rstrip()) - 1
     for data in df:
-        fr, en = data['fr'].fillna(''), data['en'].fillna('')  # Remplacez les valeurs NaN par des chaînes vides
+        fr, en = data['fr'].fillna(''), data['en'].fillna('')
         fr, en = fr.tolist(), en.tolist()
         for string in fr:
             string = string.split(' ')
@@ -60,15 +60,17 @@ def train_tokenizer():
     add_special_token(tokenizer_fr)
     add_special_token(tokenizer_en)
 
-    with open('../data/saver/tokenizer_fr.pkl', 'wb') as f:
+    with open(f'{data_path}/saver/tokenizer_fr.pkl', 'wb') as f:
         pickle.dump(tokenizer_fr, f)
-    with open('../data/saver/tokenizer_en.pkl', 'wb') as f:
+    with open(f'{data_path}/tokenizer_en.pkl', 'wb') as f:
         pickle.dump(tokenizer_en, f)
 
-def preprocess(old_path, new_path):
-    with open('../data/saver/tokenizer_fr.pkl', 'rb') as f:
+def preprocess(_old_path, _new_path, path_data):
+    old_path = path_data + '/' + _old_path
+    new_path = path_data + '/' + _new_path
+    with open(f'{path_data}/saver/tokenizer_fr.pkl', 'rb') as f:
         tokenizer_fr = pickle.load(f)
-    with open('../data/saver/tokenizer_en.pkl', 'rb') as f:
+    with open(f'{path_data}/saver/tokenizer_en.pkl', 'rb') as f:
         tokenizer_en = pickle.load(f)
     with open(old_path, 'r') as fp:
         nb_line = sum(1 for line in fp if line.rstrip()) - 1
@@ -101,6 +103,6 @@ def preprocess(old_path, new_path):
     f.close()
 
 def main():
-    #train_tokenizer()
-    preprocess("../data/small_words.csv", "../data/train.h5")
-    #preprocess("../data/test.csv", "../data/test.h5")
+    train_tokenizer('data')
+    preprocess("train.csv", "train.h5",'data')
+    preprocess("test.csv", "test.h5", 'data')

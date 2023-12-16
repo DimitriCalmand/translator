@@ -1,9 +1,9 @@
 import tensorflow as tf
 import numpy as np
 from utils import *
-from encode import *
-from encoder_layer import TransformerEncoder
-from decoder_layer import TransformerDecoder
+from preprocess.encode import *
+from model.encoder_layer import TransformerEncoder
+from model.decoder_layer import TransformerDecoder
 
 class Transformer(tf.keras.Model):
     def __init__(self,
@@ -63,7 +63,6 @@ class Transformer(tf.keras.Model):
         return {"loss":self.loss_metric.result()}
 
     def generate(self, inputs):
-        print("loss = ", self.loss_metric.result().numpy())
         bs = tf.shape(inputs)[0]
         enc = self.encoder(inputs)
         decoder_inputs = tf.ones((bs, 1), dtype=tf.int32) * START_TOKEN
@@ -75,10 +74,11 @@ class Transformer(tf.keras.Model):
             decoder_inputs = tf.concat([decoder_inputs,  last_logit], axis = -1)
         return decoder_inputs 
     def predict_str(self, string):
-        tokens = encode([string])
+        dico = []
+        tokens = encode([string], dico)
         inputs = np.array(tokens)[:, 1:]
         predicted = self.generate(inputs)
-        str_predicted = decode(predicted, tokenizer_fr) 
+        str_predicted = decode(predicted, tokenizer_fr, dico) 
         return str_predicted
 
          

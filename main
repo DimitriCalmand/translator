@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+
+import sys
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+src_path = os.path.join(os.path.dirname(__file__), 'src')
+sys.path.append(src_path)
+def main():
+    if len(sys.argv) == 1 or sys.argv[1] == 'main':
+        import main
+        main.main()
+    elif sys.argv[1] == 'tokenizer':
+        import preprocess.train_tokenizer as tt
+        tt.main()
+main()
