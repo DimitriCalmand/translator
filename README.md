@@ -24,13 +24,17 @@ Follow the steps below to prepare the dataset for training:
 
 1. **Creating the Dataset**: Run the `create_dataset.py` script to prepare the initial dataset.
 
-`$> python3 create_dataset.py`
+``` bash
+$> python3 create_dataset.py
+```
 
 2. **Splitting the Dataset**: Use the `split.sh` script to divide the dataset 
 into training and testing sets. The specified ratio here is 0.99, 
 meaning 99% of the data will be used for training and the rest for testing.
 
-`$> ./split.sh dataset.csv train.csv test.csv 0.99`
+``` bash
+$> ./split.sh dataset.csv train.csv test.csv 0.99
+```
 
 - The first file, `train.csv`, contains the first 1,987,646 lines for training.
 - The second file, `test.csv`, contains the remaining lines for testing.
@@ -38,12 +42,16 @@ meaning 99% of the data will be used for training and the rest for testing.
 #### Preparing for Training
 Before launching the neural network training, prepare the data:
 
-`$> ./main tokenizer`
+``` bash
+$> ./main tokenizer
+```
 
 #### Launching the Neural Network
 Once the data is prepared, you can start the training process:
 
-`$> ./main`
+``` bash
+$> ./main
+```
 
 # Feature
 You can change the hyperparameters in the `src/main.py`
